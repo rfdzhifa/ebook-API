@@ -21,7 +21,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('me', [AuthController::class, 'me']);
+// Route::get('me', [AuthController::class, 'me']);
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::resource('books', BookController::class)->except(
     ['create', 'edit']
@@ -30,3 +33,10 @@ Route::resource('books', BookController::class)->except(
 Route::resource('authors', AuthorController::class)->except(
     ['create', 'edit']
 );
+
+//protected routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::resource('books', BookController::class)->except('create', 'edit', 'show', 'index');
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::resource('authors', AuthorController::class)->except('create', 'edit', 'show', 'index');
+});
